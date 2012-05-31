@@ -60,9 +60,6 @@ exports.testHOTP = function(beforeExit, assert) {
 	args.C = 0;
 	args.P = 'WILLNOTPASS';
 	notp.checkHOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, false, 'Should not pass');
 			n++;
@@ -74,9 +71,6 @@ exports.testHOTP = function(beforeExit, assert) {
 		args.C = i;
 		args.P = HOTP[i];
 		notp.checkHOTP(args,
-			function(err) {
-				assert.eql(true, false, err);
-			},
 			function(ret, w) {
 				assert.eql(ret, true, 'Should pass');
 				assert.eql(w, 0, 'Should be in sync');
@@ -108,9 +102,6 @@ exports.testTOTP = function(beforeExit, assert) {
 	args.T = 0;
 	args.P = 'WILLNOTPASS';
 	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, false, 'Should not pass');
 			n++;
@@ -121,9 +112,6 @@ exports.testTOTP = function(beforeExit, assert) {
 	args._t = 59*1000;
 	args.P = '287082';
 	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, true, 'Should pass');
 			assert.eql(w, 0, 'Should be in sync');
@@ -135,9 +123,6 @@ exports.testTOTP = function(beforeExit, assert) {
 	args._t = 1234567890*1000;
 	args.P = '005924';
 	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, true, 'Should pass');
 			assert.eql(w, 0, 'Should be in sync');
@@ -149,9 +134,6 @@ exports.testTOTP = function(beforeExit, assert) {
 	args._t = 1111111109*1000;
 	args.P = '081804';
 	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, true, 'Should pass');
 			assert.eql(w, 0, 'Should be in sync');
@@ -163,9 +145,6 @@ exports.testTOTP = function(beforeExit, assert) {
 	args._t = 2000000000*1000;
 	args.P = '279037';
 	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, true, 'Should pass');
 			assert.eql(w, 0, 'Should be in sync');
@@ -196,9 +175,6 @@ exports.testHOTPOutOfSync = function(beforeExit, assert) {
 	// Check that the test should fail for W < 8
 	args.W = 7;
 	notp.checkHOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, false, 'Should not pass for value of W < 8');
 			n++;
@@ -208,9 +184,6 @@ exports.testHOTPOutOfSync = function(beforeExit, assert) {
 	// Check that the test should pass for W >= 9
 	args.W = 8;
 	notp.checkHOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, true, 'Should pass for value of W >= 9');
 			n++;
@@ -239,9 +212,6 @@ exports.testTOTPOutOfSync = function(beforeExit, assert) {
 	// Check that the test should fail for W < 2
 	args.W = 2;
 	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, false, 'Should not pass for value of W < 3');
 			n++;
@@ -251,9 +221,6 @@ exports.testTOTPOutOfSync = function(beforeExit, assert) {
 	// Check that the test should pass for W >= 3
 	args.W = 3;
 	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, true, 'Should pass for value of W >= 3');
 			n++;
@@ -281,9 +248,6 @@ exports.testGetHOTP = function(beforeExit, assert) {
 	for(i=0;i<HOTP.length;i++) {
 		args.C = i;
 		notp.getHOTP(args,
-			function(err) {
-				assert.eql(true, false, err);
-			},
 			function(ret) {
 				assert.eql(ret, HOTP[i], 'HTOP value should be correct');
 				n++;
@@ -310,9 +274,6 @@ exports.testGetTOTP = function(beforeExit, assert) {
 	// Check for test vector at 59s
 	args._t = 59*1000;
 	notp.getTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, '287082', 'TOTP values should match');
 			n++;
@@ -322,9 +283,6 @@ exports.testGetTOTP = function(beforeExit, assert) {
 	// Check for test vector at 1234567890
 	args._t = 1234567890*1000;
 	notp.getTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, '005924', 'TOTP values should match');
 			n++;
@@ -334,9 +292,6 @@ exports.testGetTOTP = function(beforeExit, assert) {
 	// Check for test vector at 1111111109
 	args._t = 1111111109*1000;
 	notp.getTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, '081804', 'TOTP values should match');
 			n++;
@@ -346,9 +301,6 @@ exports.testGetTOTP = function(beforeExit, assert) {
 	// Check for test vector at 2000000000
 	args._t = 2000000000*1000;
 	notp.getTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
 		function(ret, w) {
 			assert.eql(ret, '279037', 'TOTP values should match');
 			n++;
