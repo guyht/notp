@@ -14,15 +14,13 @@ IMPORTANT: The NOTP library accepts ASCII strings as keys, but the Google Authen
 ```javascript
 var notp = require('notp');
 
-var args = {};
-
 //.... some initial login code, that receives the TOTP / HTOP
 // token from the user
-args.key = 'TOTP key for user... could be stored in DB';
-args.token = 'User supplied TOTP value';
+var key = 'TOTP key for user... could be stored in DB';
+var token = 'User supplied TOTP value';
 
 // Check TOTP is correct
-var login = notp.checkTOTP(args);
+var login = notp.totp.verify(token, key);
 
 // invalid token
 if (!login) {
@@ -34,7 +32,7 @@ console.log('Token valid, sync value is %s', login.delta);
 ```
 
 # API
-##notp.checkHOTP(args)
+##hotp.verify(token, key, opt)
 
     Check a One Time Password based on a counter.
 
@@ -47,12 +45,8 @@ console.log('Token valid, sync value is %s', login.delta);
 
     Arguments:
 
-    args
-      key - Key for the one time password.  This should be unique and secret for
-          every user as it is the seed used to calculate the HMAC
 
-      token - Passcode to validate.
-
+    opt
       window - The allowable margin for the counter.  The function will check
           W codes in the future against the provided passcode.  Note,
           it is the calling applications responsibility to keep track of
@@ -71,12 +65,10 @@ console.log('Token valid, sync value is %s', login.delta);
 **Example**
 
 ```javascript
-var opt = {
-    key : 'USER SPECIFIC KEY', // Should be ASCII string
-    token : 'USER SUPPLIED PASSCODE'
-};
+var key = 'USER SPECIFIC KEY', // Should be ASCII string
+var token = 'USER SUPPLIED PASSCODE'
 
-var res = notp.checkHOTP(opt);
+var res = notp.hotp.verify(token, key, opt);
 
 // not valid
 if (!res) {
@@ -86,7 +78,7 @@ if (!res) {
 console.log('valid, counter is out of sync by %d steps', res.delta);
 ```
 
-##notp.checkTOTP(args, err, cb)
+##totp.verify(token, key, opt)
 
 
     Check a One Time Password based on a timer.
@@ -100,12 +92,7 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
 
     Arguments:
 
-    args
-     key - Key for the one time password.  This should be unique and secret for
-         every user as it is the seed used to calculate the HMAC
-
-     token - Passcode to validate.
-
+    opt
      window - The allowable margin for the counter.  The function will check
          W codes either side of the provided counter.  Note,
          it is the calling applications responsibility to keep track of
@@ -126,12 +113,10 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
 **Example**
 
 ```javascript
-var opt = {
-    key : 'USER SPECIFIC KEY', // Should be ASCII string
-    token : 'USER SUPPLIED PASSCODE'
-};
+var key = 'USER SPECIFIC KEY', // Should be ASCII string
+var token = 'USER SUPPLIED PASSCODE'
 
-var res = notp.checkTOTP(opt);
+var res = notp.totp.verify(token, key, opt);
 
 // not valid
 if (!res) {
@@ -141,7 +126,7 @@ if (!res) {
 console.log('valid, counter is out of sync by %d steps', res.delta);
 ```
 
-##notp.getHOTP(args, err, cb)
+##hotp.gen(key, opt)
 
     Generate a counter based One Time Password
 
@@ -149,23 +134,19 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
 
     Arguments:
 
-    args
-     key - Key for the one time password.  This should be unique and secret for
-         every user as it is the seed used to calculate the HMAC
-
+    opt
      counter - Counter value.  This should be stored by the application, must
          be user specific, and be incremented for each request.
 
 **Example**
 
 ```javascript
-var token = notp.getHOTP({
-    key : 'USER SPECIFIC KEY', // Should be ASCII string
-    token : 5 // COUNTER VALUE
+var token = notp.hotp.gen(key, {
+    counter : 5 // COUNTER VALUE
 });
 ```
 
-##notp.getTOTP(args, err, cb)
+##totp.gen(key, opt)
 
     Generate a time based One Time Password
 
@@ -173,10 +154,7 @@ var token = notp.getHOTP({
 
     Arguments:
 
-    args
-     key - Key for the one time password.  This should be unique and secret for
-         every user as it is the seed used to calculate the HMAC
-
+    opt
      time - The time step of the counter.  This must be the same for
          every request and is used to calculate C.
 
@@ -185,9 +163,7 @@ var token = notp.getHOTP({
 **Example**
 
 ```javascript
-var token = notp.getTOTP({
-    key : 'USER SPECIFIC KEY' // Should be ASCII string
-});
+var token = notp.totp.gen(key);
 ```
 
 ## License

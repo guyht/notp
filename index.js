@@ -1,6 +1,52 @@
 
 var crypto = require('crypto');
 
+var hotp = {};
+
+/**
+ * Generate a counter based One Time Password
+ *
+ * @return {String} the one time password
+ *
+ * Arguments:
+ *
+ *  args
+ *     key - Key for the one time password.  This should be unique and secret for
+ *         every user as it is the seed used to calculate the HMAC
+ *
+ *     counter - Counter value.  This should be stored by the application, must
+ *         be user specific, and be incremented for each request.
+ *
+ */
+hotp.gen = function(key, opt) {
+	var key = key || '';
+	var counter = opt.counter || 0;
+
+	var p = 6;
+
+	// Create the byte array
+	var b = new Buffer(intToBytes(counter));
+
+	var hmac = crypto.createHmac('SHA1', new Buffer(key));
+
+	// Update the HMAC witht he byte array
+	var digest = hmac.update(b).digest('hex');
+
+	// Get byte array
+	var h = hexToBytes(digest);
+
+	// Truncate
+	var offset = h[19] & 0xf;
+	var v = (h[offset] & 0x7f) << 24 |
+		(h[offset + 1] & 0xff) << 16 |
+		(h[offset + 2] & 0xff) << 8  |
+		(h[offset + 3] & 0xff);
+
+	v = v + '';
+
+	return v.substr(v.length - p, p);
+};
+
 /**
  * Check a One Time Password based on a counter.
  *
@@ -30,17 +76,15 @@ var crypto = require('crypto');
  *         be user specific, and be incremented for each request.
  *
  */
-module.exports.checkHOTP = function(opt) {
-
+hotp.verify = function(token, key, opt) {
 	var window = opt.window || 50;
 	var counter = opt.counter || 0;
-	var token = opt.token || '';
 
 	// Now loop through from C to C + W to determine if there is
 	// a correct code
 	for(var i = counter; i <=  counter + window; ++i) {
 		opt.counter = i;
-		if(this.getHOTP(opt) === token) {
+		if(this.gen(key, opt) === token) {
 			// We have found a matching code, trigger callback
 			// and pass offset
 			return { delta: i - counter };
@@ -51,6 +95,45 @@ module.exports.checkHOTP = function(opt) {
 	return false;
 };
 
+var totp = {};
+
+/**
+ * Generate a time based One Time Password
+ *
+ * @return {String} the one time password
+ *
+ * Arguments:
+ *
+ *  args
+ *     key - Key for the one time password.  This should be unique and secret for
+ *         every user as it is the seed used to calculate the HMAC
+ *
+ *     time - The time step of the counter.  This must be the same for
+ *         every request and is used to calculat C.
+ *
+ *         Default - 30
+ *
+ */
+totp.gen = function(key, opt) {
+	var time = opt.time || 30;
+	var _t = new Date().getTime();;
+
+	// Time has been overwritten.
+	if(opt._t) {
+		console.log('#####################################');
+		console.log('# NOTE: TOTP TIME VARIABLE HAS BEEN #');
+		console.log('# OVERWRITTEN.  THIS SHOULD ONLY BE #');
+		console.log('# USED FOR TEST PURPOSES.           #');
+		console.log('#####################################');
+		_t = opt._t;
+	}
+
+	// Determine the value of the counter, C
+	// This is the number of time steps in seconds since T0
+	opt.counter = Math.floor((_t / 1000) / time);
+
+	return hotp.gen(key, opt);
+};
 
 /**
  * Check a One Time Password based on a timer.
@@ -83,8 +166,7 @@ module.exports.checkHOTP = function(opt) {
  *         Default - 30
  *
  */
-module.exports.checkTOTP = function(opt) {
-
+totp.verify = function(token, key, opt) {
 	var time = opt.time || 30;
 	var _t = new Date().getTime();
 
@@ -102,92 +184,11 @@ module.exports.checkTOTP = function(opt) {
 	// This is the number of time steps in seconds since T0
 	opt.counter = Math.floor((_t / 1000) / time);
 
-	return module.exports.checkHOTP(opt);
+	return hotp.verify(token, key, opt);
 };
 
-
-/**
- * Generate a counter based One Time Password
- *
- * @return {String} the one time password
- *
- * Arguments:
- *
- *  args
- *     key - Key for the one time password.  This should be unique and secret for
- *         every user as it is the seed used to calculate the HMAC
- *
- *     counter - Counter value.  This should be stored by the application, must
- *         be user specific, and be incremented for each request.
- *
- */
-module.exports.getHOTP = function(opt) {
-	var key = opt.key || '';
-	var counter = opt.counter || 0;
-
-	var p = 6;
-
-	// Create the byte array
-	var b = new Buffer(intToBytes(counter));
-
-	var hmac = crypto.createHmac('SHA1', new Buffer(key));
-
-	// Update the HMAC witht he byte array
-	var digest = hmac.update(b).digest('hex');
-
-	// Get byte array
-	var h = hexToBytes(digest);
-
-	// Truncate
-	var offset = h[19] & 0xf;
-	var v = (h[offset] & 0x7f) << 24 |
-		(h[offset + 1] & 0xff) << 16 |
-		(h[offset + 2] & 0xff) << 8  |
-		(h[offset + 3] & 0xff);
-
-	v = v + '';
-
-	return v.substr(v.length - p, p);
-};
-
-
-/**
- * Generate a time based One Time Password
- *
- * @return {String} the one time password
- *
- * Arguments:
- *
- *  args
- *     key - Key for the one time password.  This should be unique and secret for
- *         every user as it is the seed used to calculate the HMAC
- *
- *     time - The time step of the counter.  This must be the same for
- *         every request and is used to calculat C.
- *
- *         Default - 30
- *
- */
-module.exports.getTOTP = function(opt) {
-	var time = opt.time || 30;
-	var _t = new Date().getTime();;
-
-	// Time has been overwritten.
-	if(opt._t) {
-		console.log('#####################################');
-		console.log('# NOTE: TOTP TIME VARIABLE HAS BEEN #');
-		console.log('# OVERWRITTEN.  THIS SHOULD ONLY BE #');
-		console.log('# USED FOR TEST PURPOSES.           #');
-		console.log('#####################################');
-		_t = opt._t;
-	}
-
-	// Determine the value of the counter, C
-	// This is the number of time steps in seconds since T0
-	opt.counter = Math.floor((_t / 1000) / time);
-
-	return this.getHOTP(opt);
-};
+module.exports.hotp = hotp;
+module.exports.totp = totp;
 
 /**
  * convert an integer to a byte array
