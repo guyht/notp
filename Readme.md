@@ -18,8 +18,8 @@ var args = {};
 
 //.... some initial login code, that receives the TOTP / HTOP
 // token from the user
-args.K = 'TOTP key for user... could be stored in DB';
-args.P = 'User supplied TOTP value';
+args.key = 'TOTP key for user... could be stored in DB';
+args.token = 'User supplied TOTP value';
 
 // Check TOTP is correct
 var login = notp.checkTOTP(args);
@@ -72,8 +72,8 @@ console.log('Token valid, sync value is %s', login.delta);
 
 ```javascript
 var opt = {
-    K : 'USER SPECIFIC KEY', // Should be ASCII string
-    P : 'USER SUPPLIED PASSCODE'
+    key : 'USER SPECIFIC KEY', // Should be ASCII string
+    token : 'USER SUPPLIED PASSCODE'
 };
 
 var res = notp.checkHOTP(opt);
@@ -127,8 +127,8 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
 
 ```javascript
 var opt = {
-    K : 'USER SPECIFIC KEY', // Should be ASCII string
-    P : 'USER SUPPLIED PASSCODE'
+    key : 'USER SPECIFIC KEY', // Should be ASCII string
+    token : 'USER SUPPLIED PASSCODE'
 };
 
 var res = notp.checkTOTP(opt);
@@ -160,8 +160,8 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
 
 ```javascript
 var token = notp.getHOTP({
-    K : 'USER SPECIFIC KEY', // Should be ASCII string
-    C : 5 // COUNTER VALUE
+    key : 'USER SPECIFIC KEY', // Should be ASCII string
+    token : 5 // COUNTER VALUE
 });
 ```
 
@@ -186,7 +186,7 @@ var token = notp.getHOTP({
 
 ```javascript
 var token = notp.getTOTP({
-    K : 'USER SPECIFIC KEY' // Should be ASCII string
+    key : 'USER SPECIFIC KEY' // Should be ASCII string
 });
 ```
 
