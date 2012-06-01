@@ -48,12 +48,12 @@ console.log('Token valid, sync value is %s', login.delta);
     Arguments:
 
     args
-      K - Key for the one time password.  This should be unique and secret for
+      key - Key for the one time password.  This should be unique and secret for
           every user as it is the seed used to calculate the HMAC
 
-      P - Passcode to validate.
+      token - Passcode to validate.
 
-      W - The allowable margin for the counter.  The function will check
+      window - The allowable margin for the counter.  The function will check
           W codes in the future against the provided passcode.  Note,
           it is the calling applications responsibility to keep track of
           W and increment it for each password check, and also to adjust
@@ -64,7 +64,7 @@ console.log('Token valid, sync value is %s', login.delta);
 
          Default - 50
 
-      C - Counter value.  This should be stored by the application, must
+      counter - Counter value.  This should be stored by the application, must
          be user specific, and be incremented for each request.
 
 
@@ -101,12 +101,12 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
     Arguments:
 
     args
-     K - Key for the one time password.  This should be unique and secret for
+     key - Key for the one time password.  This should be unique and secret for
          every user as it is the seed used to calculate the HMAC
 
-     P - Passcode to validate.
+     token - Passcode to validate.
 
-     W - The allowable margin for the counter.  The function will check
+     window - The allowable margin for the counter.  The function will check
          W codes either side of the provided counter.  Note,
          it is the calling applications responsibility to keep track of
          W and increment it for each password check, and also to adjust
@@ -117,7 +117,7 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
 
          Default - 6
 
-     T - The time step of the counter.  This must be the same for
+     time - The time step of the counter.  This must be the same for
          every request and is used to calculat C.
 
          Default - 30
@@ -150,10 +150,10 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
     Arguments:
 
     args
-     K - Key for the one time password.  This should be unique and secret for
+     key - Key for the one time password.  This should be unique and secret for
          every user as it is the seed used to calculate the HMAC
 
-     C - Counter value.  This should be stored by the application, must
+     counter - Counter value.  This should be stored by the application, must
          be user specific, and be incremented for each request.
 
 **Example**
@@ -174,11 +174,11 @@ var token = notp.getHOTP({
     Arguments:
 
     args
-     K - Key for the one time password.  This should be unique and secret for
+     key - Key for the one time password.  This should be unique and secret for
          every user as it is the seed used to calculate the HMAC
 
-     T - The time step of the counter.  This must be the same for
-         every request and is used to calculat C.
+     time - The time step of the counter.  This must be the same for
+         every request and is used to calculate C.
 
          Default - 30
 

@@ -10,12 +10,12 @@ var crypto = require('crypto');
  * Arguments:
  *
  *  args
- *     K - Key for the one time password.  This should be unique and secret for
+ *     key - Key for the one time password.  This should be unique and secret for
  *         every user as it is the seed used to calculate the HMAC
  *
- *     P - Passcode to validate.
+ *     token - Passcode to validate.
  *
- *     W - The allowable margin for the counter.  The function will check
+ *     window - The allowable margin for the counter.  The function will check
  *         W codes in the future against the provided passcode.  Note,
  *         it is the calling applications responsibility to keep track of
  *         W and increment it for each password check, and also to adjust
@@ -26,24 +26,24 @@ var crypto = require('crypto');
  *
  *         Default - 50
  *
- *     C - Counter value.  This should be stored by the application, must
+ *     counter - Counter value.  This should be stored by the application, must
  *         be user specific, and be incremented for each request.
  *
  */
-module.exports.checkHOTP = function(args) {
+module.exports.checkHOTP = function(opt) {
 
-	var W = args.W || 50;
-	var C = args.C || 0;
-	var P = args.P || '';
+	var window = opt.window || 50;
+	var counter = opt.counter || 0;
+	var token = opt.token || '';
 
 	// Now loop through from C to C + W to determine if there is
 	// a correct code
-	for(i = C; i <= C+W; ++i) {
-		args.C = i;
-		if(this.getHOTP(args) === P) {
+	for(var i = counter; i <=  counter + window; ++i) {
+		opt.counter = i;
+		if(this.getHOTP(opt) === token) {
 			// We have found a matching code, trigger callback
 			// and pass offset
-			return { delta: i - C };
+			return { delta: i - counter };
 		}
 	}
 
@@ -61,12 +61,12 @@ module.exports.checkHOTP = function(args) {
  * Arguments:
  *
  *  args
- *     K - Key for the one time password.  This should be unique and secret for
+ *     key - Key for the one time password.  This should be unique and secret for
  *         every user as it is the seed used to calculate the HMAC
  *
- *     P - Passcode to validate.
+ *     token - Passcode to validate.
  *
- *     W - The allowable margin for the counter.  The function will check
+ *     window - The allowable margin for the counter.  The function will check
  *         W codes either side of the provided counter.  Note,
  *         it is the calling applications responsibility to keep track of
  *         W and increment it for each password check, and also to adjust
@@ -77,32 +77,32 @@ module.exports.checkHOTP = function(args) {
  *
  *         Default - 6
  *
- *     T - The time step of the counter.  This must be the same for
- *         every request and is used to calculat C.
+ *     time - The time step of the counter.  This must be the same for
+ *         every request and is used to calculate C.
  *
  *         Default - 30
  *
  */
-module.exports.checkTOTP = function(args) {
+module.exports.checkTOTP = function(opt) {
 
-	var T = args.T || 30;
+	var time = opt.time || 30;
 	var _t = new Date().getTime();
 
 	// Time has been overwritten.
-	if(args._t) {
+	if(opt._t) {
 		console.log('#####################################');
 		console.log('# NOTE: TOTP TIME VARIABLE HAS BEEN #');
 		console.log('# OVERWRITTEN.  THIS SHOULD ONLY BE #');
 		console.log('# USED FOR TEST PURPOSES.           #');
 		console.log('#####################################');
-		_t = args._t;
+		_t = opt._t;
 	}
 
 	// Determine the value of the counter, C
 	// This is the number of time steps in seconds since T0
-	args.C = Math.floor((_t / 1000) / T);
+	opt.counter = Math.floor((_t / 1000) / time);
 
-	return module.exports.checkHOTP(args);
+	return module.exports.checkHOTP(opt);
 };
 
 
@@ -114,16 +114,16 @@ module.exports.checkTOTP = function(args) {
  * Arguments:
  *
  *  args
- *     K - Key for the one time password.  This should be unique and secret for
+ *     key - Key for the one time password.  This should be unique and secret for
  *         every user as it is the seed used to calculate the HMAC
  *
- *     C - Counter value.  This should be stored by the application, must
+ *     counter - Counter value.  This should be stored by the application, must
  *         be user specific, and be incremented for each request.
  *
  */
-module.exports.getHOTP = function(args) {
-	var key = args.K || '';
-	var counter = args.C || 0;
+module.exports.getHOTP = function(opt) {
+	var key = opt.key || '';
+	var counter = opt.counter || 0;
 
 	var p = 6;
 
@@ -159,35 +159,34 @@ module.exports.getHOTP = function(args) {
  * Arguments:
  *
  *  args
- *     K - Key for the one time password.  This should be unique and secret for
+ *     key - Key for the one time password.  This should be unique and secret for
  *         every user as it is the seed used to calculate the HMAC
  *
- *     T - The time step of the counter.  This must be the same for
+ *     time - The time step of the counter.  This must be the same for
  *         every request and is used to calculat C.
  *
  *         Default - 30
  *
  */
-module.exports.getTOTP = function(args) {
-	var K = args.K || '';
-	var T = args.T || 30;
+module.exports.getTOTP = function(opt) {
+	var time = opt.time || 30;
 	var _t = new Date().getTime();;
 
 	// Time has been overwritten.
-	if(args._t) {
+	if(opt._t) {
 		console.log('#####################################');
 		console.log('# NOTE: TOTP TIME VARIABLE HAS BEEN #');
 		console.log('# OVERWRITTEN.  THIS SHOULD ONLY BE #');
 		console.log('# USED FOR TEST PURPOSES.           #');
 		console.log('#####################################');
-		_t = args._t;
+		_t = opt._t;
 	}
 
 	// Determine the value of the counter, C
 	// This is the number of time steps in seconds since T0
-	args.C = Math.floor((_t / 1000) / T);
+	opt.counter = Math.floor((_t / 1000) / time);
 
-	return this.getHOTP(args);
+	return this.getHOTP(opt);
 };
 
 /**
