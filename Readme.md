@@ -3,41 +3,38 @@
 
 # Installation
 
-Via npm
-
-    $ npm install notp
-
-Or... since there are no dependencies, you can simply download the files in ./lib and then just require as normal
-
-    $ require('./lib/nopt');
+```
+npm install notp
+```
 
 # Usage
 
-IMPORTANT: The NOTP library accepts ASCII strings as keys, but the Google Authenticator app uses base32 encoded strings.  If you wish to use this library in conjunction with the Google Authenticator app, then you need to convert the keys to base32 before entering them into the Google Authenticator app.  NOTP provides helper functions for this.
+IMPORTANT: The NOTP library accepts ASCII strings as keys, but the Google Authenticator app uses base32 encoded strings.  If you wish to use this library in conjunction with the Google Authenticator app, then you need to convert the keys to base32 before entering them into the Google Authenticator app.
 
-    var notp = require('notp'),
-        args = {};
+```javascript
+var notp = require('notp');
 
-    //.... some initial login code, that receives the TOTP / HTOP
-    // token from the user
-    args.K = 'TOTP key for user... could be stored in DB';
-    args.P = 'User supplied TOTP value';
+var args = {};
 
-    // Check TOTP is correct
-    notp.checkTOTP(
-        args,
-        function(err) { console.log('Oops, an error occured ' + err); },
-        function(login, sync) {
-            if(login) {
-                console.log('Token valid, sync value is ' + sync);
-            } else {
-                console.log('Token invalid');
-            }
-         }
-    );
+//.... some initial login code, that receives the TOTP / HTOP
+// token from the user
+args.K = 'TOTP key for user... could be stored in DB';
+args.P = 'User supplied TOTP value';
+
+// Check TOTP is correct
+var login = notp.checkTOTP(args);
+
+// invalid token
+if (!login) {
+    return console.log('Token invalid');
+}
+
+// valid token
+console.log('Token valid, sync value is %s', login.delta);
+```
 
 # API
-##notp.checkHOTP(args, err, cb)
+##notp.checkHOTP(args)
 
     Check a One Time Password based on a counter.
 
@@ -73,20 +70,21 @@ IMPORTANT: The NOTP library accepts ASCII strings as keys, but the Google Authen
 
 **Example**
 
-    notp.checkHOTP(
-        {
-            K : 'USER SPECIFIC KEY', // Should be ASCII string
-            P : 'USER SUPPLIED PASSCODE'
-        },
-        function(err) { console.log('Ooops ' + err); },
-        function(res, w) {
-            if(res) {
-                console.log('Check was successful, counter is out of sync by ' + w + ' steps');
-            } else {
-                console.log('Check was unsuccesful');
-            }
-         }
-     );
+```javascript
+var opt = {
+    K : 'USER SPECIFIC KEY', // Should be ASCII string
+    P : 'USER SUPPLIED PASSCODE'
+};
+
+var res = notp.checkHOTP(opt);
+
+// not valid
+if (!res) {
+    return console.log('invalid');
+}
+
+console.log('valid, counter is out of sync by %d steps', res.delta);
+```
 
 ##notp.checkTOTP(args, err, cb)
 
@@ -127,20 +125,21 @@ IMPORTANT: The NOTP library accepts ASCII strings as keys, but the Google Authen
 
 **Example**
 
-    notp.checkTOTP(
-        {
-            K : 'USER SPECIFIC KEY', // Should be ASCII string
-            P : 'USER SUPPLIED PASSCODE'
-        },
-        function(err) { console.log('Ooops ' + err); },
-        function(res, w) {
-            if(res) {
-                console.log('Check was successful, counter is out of sync by ' + w + ' steps');
-            } else {
-                console.log('Check was unsuccesful');
-            }
-         }
-     );
+```javascript
+var opt = {
+    K : 'USER SPECIFIC KEY', // Should be ASCII string
+    P : 'USER SUPPLIED PASSCODE'
+};
+
+var res = notp.checkTOTP(opt);
+
+// not valid
+if (!res) {
+    return console.log('invalid');
+}
+
+console.log('valid, counter is out of sync by %d steps', res.delta);
+```
 
 ##notp.getHOTP(args, err, cb)
 
@@ -159,22 +158,16 @@ IMPORTANT: The NOTP library accepts ASCII strings as keys, but the Google Authen
 
 **Example**
 
-    notp.getHOTP(
-        {
-            K : 'USER SPECIFIC KEY', // Should be ASCII string
-            C : 5 // COUNTER VALUE
-        },
-        function(err) { console.log('Ooops ' + err); },
-        function(res) {
-            console.log('HOTP for supplied K and C values is ' + res);
-        }
-    );
+```javascript
+var token = notp.getHOTP({
+    K : 'USER SPECIFIC KEY', // Should be ASCII string
+    C : 5 // COUNTER VALUE
+});
+```
 
 ##notp.getTOTP(args, err, cb)
 
-NOTE: Base32 encoding and decoding provided by [Nibbler](http://www.tumuski.com/2010/04/nibbler) library
-
-    Gennerate a time based One Time Password
+    Generate a time based One Time Password
 
     First argument of callback is the value of the One Time Password
 
@@ -191,47 +184,11 @@ NOTE: Base32 encoding and decoding provided by [Nibbler](http://www.tumuski.com/
 
 **Example**
 
-    notp.getTOTP(
-        {
-            K : 'USER SPECIFIC KEY' // Should be ASCII string
-        },
-        function(err) { console.log('Ooops ' + err); },
-        function(res) {
-            console.log('TOTP for supplied K and C values is ' + res);
-        }
-    );
-
-##notp.encBase32(str)
-
-    Helper function to convert a string to a base32 encoded string
-
-    Arguments:
-
-    str - String to encode
-
-    Returns: Base 32 encoded string
-
-**Example**
-
-    var StringForGoogleAuthenticator = notp.encBase32('USER SPECIFIC KEY');
-
-##notp.decBase32(b32)
-
-    Helper function to convert a base32 encoded string to an ascii string
-
-    Arguments:
-
-    b32 - String to decode
-
-    Returns: ASCII string
-
-**Example**
-
-    var str = notp.decBase32('BASE32 ENCODED STRING');
-
-# Developers
-To run the tests, make sure you have [expresso](https://github.com/visionmedia/expresso) installed, and run it from the base directory.  You should see some warnings when running the TOTP tests, this is normal and is a result of overriding the time settings.  If anyone can come up with a better way of running the TOTP tests please let me know.
-
+```javascript
+var token = notp.getTOTP({
+    K : 'USER SPECIFIC KEY' // Should be ASCII string
+});
+```
 
 ## License
 
