@@ -15,7 +15,7 @@
   "engines": {
     "node": ">= v0.4.10"
   },
-  "dependencies": {}
+  "dependencies": {},
   "devDependencies": {
     "expresso" : "0.9.0"
   }
