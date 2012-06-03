@@ -59,12 +59,12 @@ Returns null if token is not valid for given key and options.
 Returns an object `{delta: #}` if the token is valid. `delta` is the count skew between client and server.
 
 ### opt
-** window **
+**window**
 > The allowable margin for the counter. The function will check `window` codes in the future against the provided token.
 > i.e. if `window = 100` and `counter = 5` all tokens between 5 and 105 will be checked against the supplied token
 > Default - 50
 
-** counter **
+**counter**
 > Counter value. This should be stored by the application on a per user basis. It is up to the application to track and increment this value as needed. It is also up to the application to increment this value if there is a skew between the client and server (`delta`)
 
 ##totp.verify(token, key, opt)
@@ -76,12 +76,12 @@ Returns null if token is not valid for given key and options.
 Returns an object `{delta: #}` if the token is valid. `delta` is the count skew between client and server.
 
 ### opt
-** window **
+**window**
 > The allowable margin for the counter. The function will check `window` codes in the future against the provided token.
 > i.e. if `window = 5` and `counter = 1000` all tokens between 995 and 1005 will be checked against the supplied token
 > Default - 6
 
-** time **
+**time**
 > The time step of the counter. This must be the same for every request and is used to calculate C.
 > Default - 30
 
@@ -90,7 +90,7 @@ Returns an object `{delta: #}` if the token is valid. `delta` is the count skew 
 Return a counter based one time password
 
 ### opt
-** counter **
+**counter**
 > Counter value. This should be stored by the application, must be user specific, and be incremented for each request.
 
 ##totp.gen(key, opt)
@@ -98,7 +98,7 @@ Return a counter based one time password
 Return a time based one time password
 
 ### opt
-** time **
+**time**
 > The time step of the counter. This must be the same for every request and is used to calculate C.
 > Default - 30
 
