@@ -9,20 +9,18 @@ npm install notp
 
 # Usage
 
-IMPORTANT: The NOTP library accepts ASCII strings as keys, but the Google Authenticator app uses base32 encoded strings.  If you wish to use this library in conjunction with the Google Authenticator app, then you need to convert the keys to base32 before entering them into the Google Authenticator app.
-
 ```javascript
 var notp = require('notp');
 
-//.... some initial login code, that receives the TOTP / HTOP
-// token from the user
-var key = 'TOTP key for user... could be stored in DB';
-var token = 'User supplied TOTP value';
+//.... some initial login code, that receives the user details and TOTP / HOTP token
 
-// Check TOTP is correct
+var key = 'secret key for user... could be stored in DB';
+var token = 'user supplied one time use token';
+
+// Check TOTP is correct (HOTP if hotp pass type)
 var login = notp.totp.verify(token, key);
 
-// invalid token
+// invalid token if login is null
 if (!login) {
     return console.log('Token invalid');
 }
@@ -30,6 +28,26 @@ if (!login) {
 // valid token
 console.log('Token valid, sync value is %s', login.delta);
 ```
+
+## Google Authenticator
+
+[Google authenticator](https://code.google.com/p/google-authenticator/) requires that keys be base32 encoded before being used. This includes manual entry into the app as well as preparing a QR code URI.
+
+To base32 encode a utf8 key you can use the `thirty-two` module.
+
+```javascript
+var base32 = require('thirty-two');
+
+var key = 'secret key for the user';
+
+// encoded will be the secret key, base32 encoded
+var encoded = base32.encode(key);
+
+// to create a URI for a qr code (change totp to hotp is using hotp)
+var uri = 'otpauth://totp/somelabel?secret=' + encoded';
+```
+
+Note: If your label has spaces or other invalid uri characters you will need to encode it accordingly using `encodeURIComponent` More details about the uri key format can be found on the [google auth wiki](https://code.google.com/p/google-authenticator/wiki/KeyUriFormat)
 
 # API
 ##hotp.verify(token, key, opt)
