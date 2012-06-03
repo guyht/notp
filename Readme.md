@@ -1,5 +1,5 @@
 # Node One Time Password library
- Simple to use, fast, and with zero dependencies.  The Node One Time Password library is fully compliant with [HOTP](http://tools.ietf.org/html/rfc4226) (counter based one time passwords) and [TOTP](http://tools.ietf.org/html/rfc6238) (time based one time passwords).  It was designed to be used in conjunction with the [Google Authenticator](http://code.google.com/p/google-authenticator/) which has free apps for iOS, Android and BlackBerry.
+ Simple to use, fast, and with zero dependencies.  The Node One Time Password library is fully compliant with [HOTP](http://tools.ietf.org/html/rfc4226) (counter based one time passwords) and [TOTP](http://tools.ietf.org/html/rfc6238) (time based one time passwords).  It can be used in conjunction with the [Google Authenticator](http://code.google.com/p/google-authenticator/) which has free apps for iOS, Android and BlackBerry.
 
 # Installation
 
@@ -44,7 +44,7 @@ var key = 'secret key for the user';
 var encoded = base32.encode(key);
 
 // to create a URI for a qr code (change totp to hotp is using hotp)
-var uri = 'otpauth://totp/somelabel?secret=' + encoded';
+var uri = 'otpauth://totp/somelabel?secret=' + encoded;
 ```
 
 Note: If your label has spaces or other invalid uri characters you will need to encode it accordingly using `encodeURIComponent` More details about the uri key format can be found on the [google auth wiki](https://code.google.com/p/google-authenticator/wiki/KeyUriFormat)
@@ -80,22 +80,6 @@ Note: If your label has spaces or other invalid uri characters you will need to 
          be user specific, and be incremented for each request.
 
 
-**Example**
-
-```javascript
-var key = 'USER SPECIFIC KEY', // Should be ASCII string
-var token = 'USER SUPPLIED PASSCODE'
-
-var res = notp.hotp.verify(token, key, opt);
-
-// not valid
-if (!res) {
-    return console.log('invalid');
-}
-
-console.log('valid, counter is out of sync by %d steps', res.delta);
-```
-
 ##totp.verify(token, key, opt)
 
 
@@ -127,23 +111,6 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
 
          Default - 30
 
-
-**Example**
-
-```javascript
-var key = 'USER SPECIFIC KEY', // Should be ASCII string
-var token = 'USER SUPPLIED PASSCODE'
-
-var res = notp.totp.verify(token, key, opt);
-
-// not valid
-if (!res) {
-    return console.log('invalid');
-}
-
-console.log('valid, counter is out of sync by %d steps', res.delta);
-```
-
 ##hotp.gen(key, opt)
 
     Generate a counter based One Time Password
@@ -155,14 +122,6 @@ console.log('valid, counter is out of sync by %d steps', res.delta);
     opt
      counter - Counter value.  This should be stored by the application, must
          be user specific, and be incremented for each request.
-
-**Example**
-
-```javascript
-var token = notp.hotp.gen(key, {
-    counter : 5 // COUNTER VALUE
-});
-```
 
 ##totp.gen(key, opt)
 
@@ -177,35 +136,4 @@ var token = notp.hotp.gen(key, {
          every request and is used to calculate C.
 
          Default - 30
-
-**Example**
-
-```javascript
-var token = notp.totp.gen(key);
-```
-
-## License
-
-(The MIT License)
-
-Copyright (c) 2011 Guy Halford-Thompson &lt;guy@cach.me&gt;
-
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
-
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
