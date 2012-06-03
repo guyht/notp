@@ -52,90 +52,55 @@ Note: If your label has spaces or other invalid uri characters you will need to 
 # API
 ##hotp.verify(token, key, opt)
 
-    Check a One Time Password based on a counter.
+Check a counter based one time password for validity.
 
-    First argument of callback is true if password check is successful,
-    or false if check fails.
+Returns null if token is not valid for given key and options.
 
-    Second argument is the time step difference between the client and
-    the server.  This argument is only passed if the password check is
-    successful.
+Returns an object `{delta: #}` if the token is valid. `delta` is the count skew between client and server.
 
-    Arguments:
+### opt
+** window **
+> The allowable margin for the counter. The function will check `window` codes in the future against the provided token.
+> i.e. if `window = 100` and `counter = 5` all tokens between 5 and 105 will be checked against the supplied token
+> Default - 50
 
-
-    opt
-      window - The allowable margin for the counter.  The function will check
-          W codes in the future against the provided passcode.  Note,
-          it is the calling applications responsibility to keep track of
-          W and increment it for each password check, and also to adjust
-          it accordingly in the case where the client and server become
-          out of sync (second argument returns non zero).
-          E.g. if W = 100, and C = 5, this function will check the psscode
-          against all One Time Passcodes between 5 and 105.
-
-         Default - 50
-
-      counter - Counter value.  This should be stored by the application, must
-         be user specific, and be incremented for each request.
-
+** counter **
+> Counter value. This should be stored by the application on a per user basis. It is up to the application to track and increment this value as needed. It is also up to the application to increment this value if there is a skew between the client and server (`delta`)
 
 ##totp.verify(token, key, opt)
 
+Check a time based one time password for validity
 
-    Check a One Time Password based on a timer.
+Returns null if token is not valid for given key and options.
 
-    First argument of callback is true if password check is successful,
-    or false if check fails.
+Returns an object `{delta: #}` if the token is valid. `delta` is the count skew between client and server.
 
-    Second argument is the time step difference between the client and
-    the server.  This argument is only passed if the password check is
-    successful.
+### opt
+** window **
+> The allowable margin for the counter. The function will check `window` codes in the future against the provided token.
+> i.e. if `window = 5` and `counter = 1000` all tokens between 995 and 1005 will be checked against the supplied token
+> Default - 6
 
-    Arguments:
-
-    opt
-     window - The allowable margin for the counter.  The function will check
-         W codes either side of the provided counter.  Note,
-         it is the calling applications responsibility to keep track of
-         W and increment it for each password check, and also to adjust
-         it accordingly in the case where the client and server become
-         out of sync (second argument returns non zero).
-         E.g. if W = 5, and C = 1000, this function will check the psscode
-         against all One Time Passcodes between 995 and 1005.
-
-         Default - 6
-
-     time - The time step of the counter.  This must be the same for
-         every request and is used to calculat C.
-
-         Default - 30
+** time **
+> The time step of the counter. This must be the same for every request and is used to calculate C.
+> Default - 30
 
 ##hotp.gen(key, opt)
 
-    Generate a counter based One Time Password
+Return a counter based one time password
 
-    First argument of callback is the value of the One Time Password
-
-    Arguments:
-
-    opt
-     counter - Counter value.  This should be stored by the application, must
-         be user specific, and be incremented for each request.
+### opt
+** counter **
+> Counter value. This should be stored by the application, must be user specific, and be incremented for each request.
 
 ##totp.gen(key, opt)
 
-    Generate a time based One Time Password
+Return a time based one time password
 
-    First argument of callback is the value of the One Time Password
-
-    Arguments:
-
-    opt
-     time - The time step of the counter.  This must be the same for
-         every request and is used to calculate C.
-
-         Default - 30
+### opt
+** time **
+> The time step of the counter. This must be the same for every request and is used to calculate C.
+> Default - 30
 
 # Migrating from 1.x to 2.x
 
