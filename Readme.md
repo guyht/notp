@@ -137,3 +137,29 @@ Note: If your label has spaces or other invalid uri characters you will need to 
 
          Default - 30
 
+# Migrating from 1.x to 2.x
+
+## Removed
+The `encBase32` and `decBase32` methods have been removed. If you wish to encode/decode base32 you should install a module to do so. We recommend the `thirty-two` npm module.
+
+## Changed
+
+All of the APIs have been changed to return values directly instead of using callbacks. This reflects the fact that the functions are actually synchronous and perform no I/O.
+
+Some of the required arguments to the functions have also been removed from the `args` parameter and are passed as separate function parameters. See the above API docs for details.
+
+* `notp.checkHOTP(args, err, cb)` -> `notp.hotp.verify(token, key, opt)`
+* `notp.checkTOTP(args, err, cb)` -> `notp.totp.verify(token, key, opt)`
+* `notp.getHOTP(args, err, cb)` -> `notp.gotp.gen(key, opt)`
+* `notp.getTOTP(args, err, cb)` -> `notp.totp.gen(key, opt)`
+
+## Args
+
+The argument names have also changed to better describe the purpose of the argument.
+
+* `K` -> no longer in args/opt but passed directly as a function argument
+* `P` -> no longer in args/opt but passed directly as a function argument
+* `W` -> `window`
+* `C` -> `counter`
+* `T` -> `time`
+
