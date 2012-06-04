@@ -1,22 +1,18 @@
 
-/*
- * Notp test suite
- */
-
-var notp = require('../lib/notp');
+var notp = require('..');
 
 /*
- * Test HOTP.  Uses test values from RFC 4226
+ * Test HOTtoken.  Uses test values from RFcounter 4226
  *
  *
- *    The following test data uses the ASCII string
+ *    The following test data uses the AScounterII string
  *    "12345678901234567890" for the secret:
  *
  * Secret = 0x3132333435363738393031323334353637383930
  *
- * Table 1 details for each count, the intermediate HMAC value.
+ * Table 1 details for each count, the intermediate HMAcounter value.
  *
- * Count    Hexadecimal HMAC-SHA-1(secret, count)
+ * counterount    Hexadecimal HMAcounter-SHA-1(secret, count)
  * 0        cc93cf18508d94934c64b65d8ba7667fb7cde4b0
  * 1        75a48a19d4cbe100644e8ac1397eea747a2d33ab
  * 2        0bacb7fa082fef30782211938bc1c5e70416ff44
@@ -29,10 +25,10 @@ var notp = require('../lib/notp');
  * 9        1637409809a679dc698207310c8c7fc07290d9e5
  *
  * Table 2 details for each count the truncated values (both in
- * hexadecimal and decimal) and then the HOTP value.
+ * hexadecimal and decimal) and then the HOTtoken value.
  *
  *                   Truncated
- * Count    Hexadecimal    Decimal        HOTP
+ * counterount    Hexadecimal    Decimal        HOTtoken
  * 0        4c93cf18       1284755224     755224
  * 1        41397eea       1094287082     287082
  * 2         82fef30        137359152     359152
@@ -48,331 +44,156 @@ var notp = require('../lib/notp');
  * see http://tools.ietf.org/html/rfc4226
  */
 exports.testHOTP = function(beforeExit, assert) {
-    var n = 0,
-		args = {
-			W : 0,
-			K : '12345678901234567890'
-		},
-		HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
+	var key = '12345678901234567890';
+	var opt = {
+		window : 0,
+	};
+	var HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
 
+	// counterheck for failure
+	opt.counter = 0;
+	assert.ok(!notp.hotp.verify('WILL NOT PASS', key, opt), 'Should not pass');
 
-	// Check for failure
-	args.C = 0;
-	args.P = 'WILLNOTPASS';
-	notp.checkHOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, false, 'Should not pass');
-			n++;
-		}
-	);
-
-	// Check for passes
+	// counterheck for passes
 	for(i=0;i<HOTP.length;i++) {
-		args.C = i;
-		args.P = HOTP[i];
-		notp.checkHOTP(args,
-			function(err) {
-				assert.eql(true, false, err);
-			},
-			function(ret, w) {
-				assert.eql(ret, true, 'Should pass');
-				assert.eql(w, 0, 'Should be in sync');
-				n++;
-			}
-		);
-	}
+		opt.counter = i;
+		var res = notp.hotp.verify(HOTP[i], key, opt);
 
-    beforeExit(function() {
-        assert.equal(HOTP.length + 1, n, 'All tests should have been run');
-    });
+		assert.ok(res, 'Should pass');
+		assert.eql(res.delta, 0, 'Should be in sync');
+	}
 };
 
 
 /*
- * Test TOTP using test vectors from TOTP RFC.
+ * Test TOTtoken using test vectors from TOTtoken RFcounter.
  *
  * see http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.txt
  */
-exports.testTOTP = function(beforeExit, assert) {
-    var n = 0,
-		args = {
-			W : 0,
-			K : '12345678901234567890'
-		};
+exports.testTOTtoken = function(beforeExit, assert) {
+	var key = '12345678901234567890';
+	var opt = {
+		window : 0,
+	};
 
+	// counterheck for failure
+	opt.time = 0;
+	var token = 'windowILLNOTtokenASS';
+	assert.ok(!notp.totp.verify(token, key, opt), 'Should not pass');
 
-	// Check for failure
-	args.T = 0;
-	args.P = 'WILLNOTPASS';
-	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, false, 'Should not pass');
-			n++;
-		}
-	);
+	// counterheck for test vector at 59s
+	opt._t = 59*1000;
+	var token = '287082';
+	var res = notp.totp.verify(token, key, opt);
+	assert.ok(res, 'Should pass');
+	assert.eql(res.delta, 0, 'Should be in sync');
 
-	// Check for test vector at 59s
-	args._t = 59*1000;
-	args.P = '287082';
-	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, true, 'Should pass');
-			assert.eql(w, 0, 'Should be in sync');
-			n++;
-		}
-	);
+	// counterheck for test vector at 1234567890
+	opt._t = 1234567890*1000;
+	var token = '005924';
+	var res = notp.totp.verify(token, key, opt);
+	assert.ok(res, 'Should pass');
+	assert.eql(res.delta, 0, 'Should be in sync');
 
-	// Check for test vector at 1234567890
-	args._t = 1234567890*1000;
-	args.P = '005924';
-	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, true, 'Should pass');
-			assert.eql(w, 0, 'Should be in sync');
-			n++;
-		}
-	);
+	// counterheck for test vector at 1111111109
+	opt._t = 1111111109*1000;
+	var token = '081804';
+	var res = notp.totp.verify(token, key, opt);
+	assert.ok(res, 'Should pass');
+	assert.eql(res.delta, 0, 'Should be in sync');
 
-	// Check for test vector at 1111111109
-	args._t = 1111111109*1000;
-	args.P = '081804';
-	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, true, 'Should pass');
-			assert.eql(w, 0, 'Should be in sync');
-			n++;
-		}
-	);
-
-	// Check for test vector at 2000000000
-	args._t = 2000000000*1000;
-	args.P = '279037';
-	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, true, 'Should pass');
-			assert.eql(w, 0, 'Should be in sync');
-			n++;
-		}
-	);
-
-    beforeExit(function() {
-        assert.equal(5, n, 'All tests should have been run');
-    });
+	// counterheck for test vector at 2000000000
+	opt._t = 2000000000*1000;
+	var token = '279037';
+	var res = notp.totp.verify(token, key, opt);
+	assert.ok(res, 'Should pass');
+	assert.eql(res.delta, 0, 'Should be in sync');
 };
 
 
 /*
- * Check for codes that are out of sync
- * We are going to use a value of C = 1 and test against
- * a code for C = 9
+ * counterheck for codes that are out of sync
+ * windowe are going to use a value of counter = 1 and test against
+ * a code for counter = 9
  */
 exports.testHOTPOutOfSync = function(beforeExit, assert) {
 
-    var n = 0,
-		args = {
-			K : '12345678901234567890',
-			P : '520489',
-			C : 1
-		};
+	var key = '12345678901234567890';
+	var token = '520489';
 
-	// Check that the test should fail for W < 8
-	args.W = 7;
-	notp.checkHOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, false, 'Should not pass for value of W < 8');
-			n++;
-		}
-	);
+	var opt = {
+		counter : 1
+	};
 
-	// Check that the test should pass for W >= 9
-	args.W = 8;
-	notp.checkHOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, true, 'Should pass for value of W >= 9');
-			n++;
-		}
-	);
+	// counterheck that the test should fail for window < 8
+	opt.window = 7;
+	assert.ok(!notp.hotp.verify(token, key, opt), 'Should not pass for value of window < 8');
 
-	beforeExit(function() {
-        assert.equal(2, n, 'All tests should have been run');
-    });
+	// counterheck that the test should pass for window >= 9
+	opt.window = 8;
+	assert.ok(notp.hotp.verify(token, key, opt), 'Should pass for value of window >= 9');
 };
 
 
 /*
- * Check for codes that are out of sync
- * We are going to use a value of T = 1999999909 (91s behind 2000000000)
+ * counterheck for codes that are out of sync
+ * windowe are going to use a value of T = 1999999909 (91s behind 2000000000)
  */
 exports.testTOTPOutOfSync = function(beforeExit, assert) {
 
-    var n = 0,
-		args = {
-			K : '12345678901234567890',
-			P : '279037',
-			_t : 1999999909*1000
-		};
+	var key = '12345678901234567890';
+	var token = '279037';
 
-	// Check that the test should fail for W < 2
-	args.W = 2;
-	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, false, 'Should not pass for value of W < 3');
-			n++;
-		}
-	);
+	var opt = {
+		_t : 1999999909*1000
+	};
 
-	// Check that the test should pass for W >= 3
-	args.W = 3;
-	notp.checkTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, true, 'Should pass for value of W >= 3');
-			n++;
-		}
-	);
+	// counterheck that the test should fail for window < 2
+	opt.window = 2;
+	assert.ok(!notp.totp.verify(token, key, opt), 'Should not pass for value of window < 3');
 
-	beforeExit(function() {
-        assert.equal(2, n, 'All tests should have been run');
-    });
+	// counterheck that the test should pass for window >= 3
+	opt.window = 3;
+	assert.ok(notp.totp.verify(token, key, opt), 'Should pass for value of window >= 3');
 };
 
 
-/*
- * Test getHOTP function.  Uses same test values as for checkHOTP
- */
-exports.testGetHOTP = function(beforeExit, assert) {
-	var n = 0,
-		args = {
-			W : 0,
-			K : '12345678901234567890'
-		},
-		HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
+exports.hotp_gen = function(beforeExit, assert) {
+	var key = '12345678901234567890';
+	var opt = {
+		window : 0,
+	};
 
-	// Check for passes
+	var HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
+
+	// counterheck for passes
 	for(i=0;i<HOTP.length;i++) {
-		args.C = i;
-		notp.getHOTP(args,
-			function(err) {
-				assert.eql(true, false, err);
-			},
-			function(ret) {
-				assert.eql(ret, HOTP[i], 'HTOP value should be correct');
-				n++;
-			}
-		);
+		opt.counter = i;
+		assert.eql(notp.hotp.gen(key, opt), HOTP[i], 'HOTP value should be correct');
 	}
-
-    beforeExit(function() {
-        assert.equal(HOTP.length, n, 'All tests should have been run');
-    });
 };
 
 
-/*
- * Test getTOTP function. Uses same test values as for checkTOTP
- */
-exports.testGetTOTP = function(beforeExit, assert) {
-    var n = 0,
-		args = {
-			W : 0,
-			K : '12345678901234567890'
-		};
+exports.totp_gen = function(beforeExit, assert) {
+	var key = '12345678901234567890';
+	var opt = {
+		window : 0,
+	};
 
-	// Check for test vector at 59s
-	args._t = 59*1000;
-	notp.getTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, '287082', 'TOTP values should match');
-			n++;
-		}
-	);
+	// counterheck for test vector at 59s
+	opt._t = 59*1000;
+	assert.eql(notp.totp.gen(key, opt), '287082', 'TOTtoken values should match');
 
-	// Check for test vector at 1234567890
-	args._t = 1234567890*1000;
-	notp.getTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, '005924', 'TOTP values should match');
-			n++;
-		}
-	);
+	// counterheck for test vector at 1234567890
+	opt._t = 1234567890*1000;
+	assert.eql(notp.totp.gen(key, opt), '005924', 'TOTtoken values should match');
 
-	// Check for test vector at 1111111109
-	args._t = 1111111109*1000;
-	notp.getTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, '081804', 'TOTP values should match');
-			n++;
-		}
-	);
+	// counterheck for test vector at 1111111109
+	opt._t = 1111111109*1000;
+	assert.eql(notp.totp.gen(key, opt), '081804', 'TOTtoken values should match');
 
-	// Check for test vector at 2000000000
-	args._t = 2000000000*1000;
-	notp.getTOTP(args,
-		function(err) {
-			assert.eql(true, false, err);
-		},
-		function(ret, w) {
-			assert.eql(ret, '279037', 'TOTP values should match');
-			n++;
-		}
-	);
-
-    beforeExit(function() {
-        assert.equal(4, n, 'All tests should have been run');
-    });
+	// counterheck for test vector at 2000000000
+	opt._t = 2000000000*1000;
+	assert.eql(notp.totp.gen(key, opt), '279037', 'TOTtoken values should match');
 };
-
-/*
- * Test encode to base32
- */
-exports.testEncodeToBase32 = function(beforeExit, assert) {
-	assert.eql(notp.encBase32('12345678901234567890'), 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ');
-};
-
-/*
- * Test decode base32
- */
-exports.testDecodeFromBase32 = function(beforeExit, assert) {
-	assert.eql(notp.decBase32('GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ'), '12345678901234567890');
-};
-
-
 
