@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/guyht/notp.png)](http://travis-ci.org/guyht/notp)
+
 # Node One Time Password library
  Simple to use, fast, and with zero dependencies.  The Node One Time Password library is fully compliant with [HOTP](http://tools.ietf.org/html/rfc4226) (counter based one time passwords) and [TOTP](http://tools.ietf.org/html/rfc6238) (time based one time passwords).  It can be used in conjunction with the [Google Authenticator](http://code.google.com/p/google-authenticator/) which has free apps for iOS, Android and BlackBerry.
 
