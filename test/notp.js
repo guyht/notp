@@ -132,6 +132,12 @@ exports.testHOTPOutOfSync = function(beforeExit, assert) {
 	// counterheck that the test should pass for window >= 9
 	opt.window = 8;
 	assert.ok(notp.hotp.verify(token, key, opt), 'Should pass for value of window >= 9');
+
+    // counterheck that test should pass for negative counter values
+    token = '755224';
+    opt.counter = 7
+    opt.window = 8;
+    assert.ok(notp.hotp.verify(token, key, opt), 'Should pass for negative counter values');
 };
 
 

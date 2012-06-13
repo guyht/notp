@@ -82,7 +82,7 @@ hotp.verify = function(token, key, opt) {
 
 	// Now loop through from C to C + W to determine if there is
 	// a correct code
-	for(var i = counter; i <=  counter + window; ++i) {
+	for(var i = counter - window; i <=  counter + window; ++i) {
 		opt.counter = i;
 		if(this.gen(key, opt) === token) {
 			// We have found a matching code, trigger callback
