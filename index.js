@@ -12,7 +12,7 @@ var hotp = {};
  *
  *  args
  *     key - Key for the one time password.  This should be unique and secret for
- *         every user as it is the seed used to calculate the HMAC
+ *         every user as this is the seed that is used to calculate the HMAC
  *
  *     counter - Counter value.  This should be stored by the application, must
  *         be user specific, and be incremented for each request.
@@ -29,7 +29,7 @@ hotp.gen = function(key, opt) {
 
 	var hmac = crypto.createHmac('SHA1', new Buffer(key));
 
-	// Update the HMAC witht he byte array
+	// Update the HMAC with the byte array
 	var digest = hmac.update(b).digest('hex');
 
 	// Get byte array
@@ -62,12 +62,12 @@ hotp.gen = function(key, opt) {
  *     token - Passcode to validate.
  *
  *     window - The allowable margin for the counter.  The function will check
- *         W codes in the future against the provided passcode.  Note,
+ *         'W' codes in the future against the provided passcode.  Note,
  *         it is the calling applications responsibility to keep track of
- *         W and increment it for each password check, and also to adjust
+ *         'W' and increment it for each password check, and also to adjust
  *         it accordingly in the case where the client and server become
  *         out of sync (second argument returns non zero).
- *         E.g. if W = 100, and C = 5, this function will check the psscode
+ *         E.g. if W = 100, and C = 5, this function will check the passcode
  *         against all One Time Passcodes between 5 and 105.
  *
  *         Default - 50
@@ -150,12 +150,12 @@ totp.gen = function(key, opt) {
  *     token - Passcode to validate.
  *
  *     window - The allowable margin for the counter.  The function will check
- *         W codes either side of the provided counter.  Note,
+ *         'W' codes either side of the provided counter.  Note,
  *         it is the calling applications responsibility to keep track of
- *         W and increment it for each password check, and also to adjust
+ *         'W' and increment it for each password check, and also to adjust
  *         it accordingly in the case where the client and server become
  *         out of sync (second argument returns non zero).
- *         E.g. if W = 5, and C = 1000, this function will check the psscode
+ *         E.g. if W = 5, and C = 1000, this function will check the passcode
  *         against all One Time Passcodes between 995 and 1005.
  *
  *         Default - 6
