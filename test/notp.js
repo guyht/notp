@@ -1,5 +1,5 @@
-
 var notp = require('..');
+var assert = require('assert');
 
 /*
  * Test HOTtoken.  Uses test values from RFcounter 4226
@@ -43,7 +43,7 @@ var notp = require('..');
  *
  * see http://tools.ietf.org/html/rfc4226
  */
-exports.testHOTP = function(beforeExit, assert) {
+exports.testHOTP = function() {
 	var key = '12345678901234567890';
 	var opt = {
 		window : 0,
@@ -60,7 +60,7 @@ exports.testHOTP = function(beforeExit, assert) {
 		var res = notp.hotp.verify(HOTP[i], key, opt);
 
 		assert.ok(res, 'Should pass');
-		assert.eql(res.delta, 0, 'Should be in sync');
+		assert.equal(res.delta, 0, 'Should be in sync');
 	}
 };
 
@@ -70,7 +70,7 @@ exports.testHOTP = function(beforeExit, assert) {
  *
  * see http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.txt
  */
-exports.testTOTtoken = function(beforeExit, assert) {
+exports.testTOTtoken = function() {
 	var key = '12345678901234567890';
 	var opt = {
 		window : 0,
@@ -86,28 +86,28 @@ exports.testTOTtoken = function(beforeExit, assert) {
 	var token = '287082';
 	var res = notp.totp.verify(token, key, opt);
 	assert.ok(res, 'Should pass');
-	assert.eql(res.delta, 0, 'Should be in sync');
+	assert.equal(res.delta, 0, 'Should be in sync');
 
 	// counterheck for test vector at 1234567890
 	opt._t = 1234567890*1000;
 	var token = '005924';
 	var res = notp.totp.verify(token, key, opt);
 	assert.ok(res, 'Should pass');
-	assert.eql(res.delta, 0, 'Should be in sync');
+	assert.equal(res.delta, 0, 'Should be in sync');
 
 	// counterheck for test vector at 1111111109
 	opt._t = 1111111109*1000;
 	var token = '081804';
 	var res = notp.totp.verify(token, key, opt);
 	assert.ok(res, 'Should pass');
-	assert.eql(res.delta, 0, 'Should be in sync');
+	assert.equal(res.delta, 0, 'Should be in sync');
 
 	// counterheck for test vector at 2000000000
 	opt._t = 2000000000*1000;
 	var token = '279037';
 	var res = notp.totp.verify(token, key, opt);
 	assert.ok(res, 'Should pass');
-	assert.eql(res.delta, 0, 'Should be in sync');
+	assert.equal(res.delta, 0, 'Should be in sync');
 };
 
 
@@ -116,7 +116,7 @@ exports.testTOTtoken = function(beforeExit, assert) {
  * windowe are going to use a value of counter = 1 and test against
  * a code for counter = 9
  */
-exports.testHOTPOutOfSync = function(beforeExit, assert) {
+exports.testHOTPOutOfSync = function() {
 
 	var key = '12345678901234567890';
 	var token = '520489';
@@ -145,7 +145,7 @@ exports.testHOTPOutOfSync = function(beforeExit, assert) {
  * counterheck for codes that are out of sync
  * windowe are going to use a value of T = 1999999909 (91s behind 2000000000)
  */
-exports.testTOTPOutOfSync = function(beforeExit, assert) {
+exports.testTOTPOutOfSync = function() {
 
 	var key = '12345678901234567890';
 	var token = '279037';
@@ -164,7 +164,7 @@ exports.testTOTPOutOfSync = function(beforeExit, assert) {
 };
 
 
-exports.hotp_gen = function(beforeExit, assert) {
+exports.hotp_gen = function() {
 	var key = '12345678901234567890';
 	var opt = {
 		window : 0,
@@ -175,12 +175,12 @@ exports.hotp_gen = function(beforeExit, assert) {
 	// counterheck for passes
 	for(i=0;i<HOTP.length;i++) {
 		opt.counter = i;
-		assert.eql(notp.hotp.gen(key, opt), HOTP[i], 'HOTP value should be correct');
+		assert.equal(notp.hotp.gen(key, opt), HOTP[i], 'HOTP value should be correct');
 	}
 };
 
 
-exports.totp_gen = function(beforeExit, assert) {
+exports.totp_gen = function() {
 	var key = '12345678901234567890';
 	var opt = {
 		window : 0,
@@ -188,18 +188,18 @@ exports.totp_gen = function(beforeExit, assert) {
 
 	// counterheck for test vector at 59s
 	opt._t = 59*1000;
-	assert.eql(notp.totp.gen(key, opt), '287082', 'TOTtoken values should match');
+	assert.equal(notp.totp.gen(key, opt), '287082', 'TOTtoken values should match');
 
 	// counterheck for test vector at 1234567890
 	opt._t = 1234567890*1000;
-	assert.eql(notp.totp.gen(key, opt), '005924', 'TOTtoken values should match');
+	assert.equal(notp.totp.gen(key, opt), '005924', 'TOTtoken values should match');
 
 	// counterheck for test vector at 1111111109
 	opt._t = 1111111109*1000;
-	assert.eql(notp.totp.gen(key, opt), '081804', 'TOTtoken values should match');
+	assert.equal(notp.totp.gen(key, opt), '081804', 'TOTtoken values should match');
 
 	// counterheck for test vector at 2000000000
 	opt._t = 2000000000*1000;
-	assert.eql(notp.totp.gen(key, opt), '279037', 'TOTtoken values should match');
+	assert.equal(notp.totp.gen(key, opt), '279037', 'TOTtoken values should match');
 };
 
