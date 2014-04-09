@@ -10,7 +10,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "NODE_ENV=test mocha"
   },
   "engines": {
     "node": ">= v0.6.0"
