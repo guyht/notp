@@ -1,5 +1,5 @@
-
 var crypto = require('crypto');
+var scmp = require('scmp');
 
 var hotp = {};
 
@@ -84,7 +84,7 @@ hotp.verify = function(token, key, opt) {
 	// a correct code
 	for(var i = counter - window; i <=  counter + window; ++i) {
 		opt.counter = i;
-		if(this.gen(key, opt) === token) {
+		if(scmp(this.gen(key, opt), token)) {
 			// We have found a matching code, trigger callback
 			// and pass offset
 			return { delta: i - counter };
