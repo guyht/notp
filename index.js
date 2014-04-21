@@ -108,8 +108,8 @@ hotp.verify = function(token, key, opt) {
 			}
 		}
 
-		// If we get to here then no codes have matched, return false
-		return false;
+		// If we get to here then no codes have matched, return null
+		return null;
 	} finally {
 		opt.counter = originCounter;
 	}
