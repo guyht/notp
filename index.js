@@ -77,22 +77,42 @@ hotp.gen = function(key, opt) {
  *
  */
 hotp.verify = function(token, key, opt) {
-	var window = opt.window || 50;
-	var counter = opt.counter || 0;
+	var originCounter = opt.counter;
+	try {
+		var window = opt.window || 50;
+		var counter = opt.counter || 0;
 
-	// Now loop through from C to C + W to determine if there is
-	// a correct code
-	for(var i = counter - window; i <=  counter + window; ++i) {
-		opt.counter = i;
-		if(this.gen(key, opt) === token) {
-			// We have found a matching code, trigger callback
-			// and pass offset
-			return { delta: i - counter };
+		// Now loop through from C to C + W to determine if there is
+		// a correct code
+		for(var i = 0; i <= window; i++) {
+			if (i === 0) {
+				opt.counter = counter;
+				if(this.gen(key, opt) === token) {
+					// We have found a matching code, trigger callback
+					// and pass offset
+					return { delta: 0 };
+				}
+			} else {
+				opt.counter = counter + i;
+				if(this.gen(key, opt) === token) {
+					// We have found a matching code, trigger callback
+					// and pass offset
+					return { delta: i };
+				}
+				opt.counter = counter - i;
+				if(this.gen(key, opt) === token) {
+					// We have found a matching code, trigger callback
+					// and pass offset
+					return { delta: -i };
+				}
+			}
 		}
-	}
 
-	// If we get to here then no codes have matched, return false
-	return false;
+		// If we get to here then no codes have matched, return false
+		return false;
+	} finally {
+		opt.counter = originCounter;
+	}
 };
 
 var totp = {};
