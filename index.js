@@ -82,12 +82,12 @@ hotp.verify = function(token, key, opt) {
 		var window = opt.window || 50;
 		var counter = opt.counter || 0;
 
-		var _verify = function(c, i) {
-			opt.counter = c;
+		var _verify = function(offset) {
+			opt.counter = counter + offset;
 			if(this.gen(key, opt) === token) {
 				// We have found a matching code, trigger callback
 				// and pass offset
-				return { delta: i };
+				return { delta: offset };
 			}
 			return null;
 		}.bind(this);
@@ -97,9 +97,9 @@ hotp.verify = function(token, key, opt) {
 		var ret;
 		for(var i = 0; i <= window; i++) {
 			if (i === 0) {
-				ret = _verify(counter, i);
+				ret = _verify(0);
 			} else {
-				ret =  _verify(counter + i, i) || _verify(counter - i, i);
+				ret = _verify(i) || _verify(-i);
 			}
 			if (ret) return ret;
 		}
