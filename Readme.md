@@ -45,8 +45,11 @@ var key = 'secret key for the user';
 // encoded will be the secret key, base32 encoded
 var encoded = base32.encode(key);
 
+// Google authenticator doesn't like equal signs
+var encodedForGoogle = encoded.toString().replace(/=/g,'');
+
 // to create a URI for a qr code (change totp to hotp is using hotp)
-var uri = 'otpauth://totp/somelabel?secret=' + encoded;
+var uri = 'otpauth://totp/somelabel?secret=' + encodedForGoogle;
 ```
 
 Note: If your label has spaces or other invalid uri characters you will need to encode it accordingly using `encodeURIComponent` More details about the uri key format can be found on the [google auth wiki](https://code.google.com/p/google-authenticator/wiki/KeyUriFormat)
