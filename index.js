@@ -27,7 +27,7 @@ hotp.gen = function(key, opt) {
 	// Create the byte array
 	var b = new Buffer(intToBytes(counter));
 
-	var hmac = crypto.createHmac('SHA1', new Buffer(key));
+	var hmac = crypto.createHmac('sha1', new Buffer(key));
 
 	// Update the HMAC with the byte array
 	var digest = hmac.update(b).digest('hex');
@@ -215,4 +215,3 @@ var hexToBytes = function(hex) {
 	}
 	return bytes;
 };
-
