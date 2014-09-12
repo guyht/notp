@@ -50,6 +50,9 @@ exports.testHOTP = function() {
 	};
 	var HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
 
+	// make sure we can not pass in opt
+	notp.hotp.verify('WILL NOT PASS', key);
+
 	// counterheck for failure
 	opt.counter = 0;
 	assert.ok(!notp.hotp.verify('WILL NOT PASS', key, opt), 'Should not pass');
@@ -75,6 +78,9 @@ exports.testTOTtoken = function() {
 	var opt = {
 		window : 0,
 	};
+
+	// make sure we can not pass in opt
+	notp.totp.verify(token, key);
 
 	// counterheck for failure
 	opt.time = 0;
@@ -172,6 +178,9 @@ exports.hotp_gen = function() {
 
 	var HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
 
+	// make sure we can not pass in opt
+	notp.hotp.gen(key);
+
 	// counterheck for passes
 	for(i=0;i<HOTP.length;i++) {
 		opt.counter = i;
@@ -185,6 +194,9 @@ exports.totp_gen = function() {
 	var opt = {
 		window : 0,
 	};
+
+	// make sure we can not pass in opt
+	notp.totp.gen(key);
 
 	// counterheck for test vector at 59s
 	opt._t = 59*1000;
