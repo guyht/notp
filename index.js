@@ -19,7 +19,8 @@ var hotp = {};
  *
  */
 hotp.gen = function(key, opt) {
-	var key = key || '';
+	key = key || '';
+	opt = opt || {};
 	var counter = opt.counter || 0;
 
 	var p = 6;
@@ -77,6 +78,7 @@ hotp.gen = function(key, opt) {
  *
  */
 hotp.verify = function(token, key, opt) {
+	opt = opt || {};
 	var window = opt.window || 50;
 	var counter = opt.counter || 0;
 
@@ -115,6 +117,7 @@ var totp = {};
  *
  */
 totp.gen = function(key, opt) {
+	opt = opt || {};
 	var time = opt.time || 30;
 	var _t = new Date().getTime();;
 
@@ -165,6 +168,7 @@ totp.gen = function(key, opt) {
  *
  */
 totp.verify = function(token, key, opt) {
+	opt = opt || {};
 	var time = opt.time || 30;
 	var _t = new Date().getTime();
 
