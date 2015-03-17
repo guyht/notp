@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/guyht/notp.svg)](https://travis-ci.org/guyht/notp)
 
 # Node One Time Password library
- Simple to use, fast, and with zero dependencies.  The Node One Time Password library is fully compliant with [HOTP](http://tools.ietf.org/html/rfc4226) (counter based one time passwords) and [TOTP](http://tools.ietf.org/html/rfc6238) (time based one time passwords).  It can be used in conjunction with the [Google Authenticator](http://code.google.com/p/google-authenticator/) which has free apps for iOS, Android and BlackBerry.
+ Simple to use, fast, and with zero dependencies.  The Node One Time Password library is fully compliant with [HOTP](http://tools.ietf.org/html/rfc4226) (counter based one time passwords) and [TOTP](http://tools.ietf.org/html/rfc6238) (time based one time passwords).  It can be used in conjunction with the [Google Authenticator](https://github.com/google/google-authenticator/) which has free apps for iOS, Android and BlackBerry.
 
 # Installation
 
@@ -33,7 +33,7 @@ console.log('Token valid, sync value is %s', login.delta);
 
 ## Google Authenticator
 
-[Google authenticator](https://code.google.com/p/google-authenticator/) requires that keys be base32 encoded before being used. This includes manual entry into the app as well as preparing a QR code URI.
+[Google authenticator](https://github.com/google/google-authenticator/) requires that keys be base32 encoded before being used. This includes manual entry into the app as well as preparing a QR code URI.
 
 To base32 encode a utf8 key you can use the `thirty-two` module.
 
@@ -52,7 +52,7 @@ var encodedForGoogle = encoded.toString().replace(/=/g,'');
 var uri = 'otpauth://totp/somelabel?secret=' + encodedForGoogle;
 ```
 
-Note: If your label has spaces or other invalid uri characters you will need to encode it accordingly using `encodeURIComponent` More details about the uri key format can be found on the [google auth wiki](https://code.google.com/p/google-authenticator/wiki/KeyUriFormat)
+Note: If your label has spaces or other invalid uri characters you will need to encode it accordingly using `encodeURIComponent` More details about the uri key format can be found on the [google auth wiki](https://github.com/google/google-authenticator/wiki/Key-Uri-Format)
 
 # API
 ##hotp.verify(token, key, opt)
