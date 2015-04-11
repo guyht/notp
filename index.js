@@ -214,7 +214,7 @@ var intToBytes = function(num) {
  */
 var hexToBytes = function(hex) {
 	var bytes = [];
-	for(var c = 0; c < hex.length; c += 2) {
+	for(var c = 0, C = hex.length; c < C; c += 2) {
 		bytes.push(parseInt(hex.substr(c, 2), 16));
 	}
 	return bytes;
