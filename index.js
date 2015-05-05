@@ -119,7 +119,7 @@ var totp = {};
 totp.gen = function(key, opt) {
 	opt = opt || {};
 	var time = opt.time || 30;
-	var _t = new Date().getTime();;
+	var _t = new Date().getTime();
 
 	// Time has been overwritten.
 	if(opt._t) {
