@@ -55,7 +55,7 @@ var uri = 'otpauth://totp/somelabel?secret=' + encodedForGoogle;
 Note: If your label has spaces or other invalid uri characters you will need to encode it accordingly using `encodeURIComponent` More details about the uri key format can be found on the [google auth wiki](https://github.com/google/google-authenticator/wiki/Key-Uri-Format)
 
 # API
-##hotp.verify(token, key, opt)
+## hotp.verify(token, key, opt)
 
 Check a counter based one time password for validity.
 
@@ -72,7 +72,7 @@ Returns an object `{delta: #}` if the token is valid. `delta` is the count skew 
 **counter**
 > Counter value. This should be stored by the application on a per user basis. It is up to the application to track and increment this value as needed. It is also up to the application to increment this value if there is a skew between the client and server (`delta`)
 
-##totp.verify(token, key, opt)
+## totp.verify(token, key, opt)
 
 Check a time based one time password for validity
 
@@ -90,7 +90,7 @@ Returns an object `{delta: #}` if the token is valid. `delta` is the count skew 
 > The time step of the counter. This must be the same for every request and is used to calculate C.
 > Default - 30
 
-##hotp.gen(key, opt)
+## hotp.gen(key, opt)
 
 Return a counter based one time password
 
@@ -98,7 +98,7 @@ Return a counter based one time password
 **counter**
 > Counter value. This should be stored by the application, must be user specific, and be incremented for each request.
 
-##totp.gen(key, opt)
+## totp.gen(key, opt)
 
 Return a time based one time password
 
