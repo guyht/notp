@@ -43,9 +43,9 @@ hotp.gen = function(key, opt) {
 		(h[offset + 2] & 0xff) << 8  |
 		(h[offset + 3] & 0xff);
 
-	v = v + '';
+	v = (v % 1000000) + '';
 
-	return v.substr(v.length - p, p);
+	return Array(7-v.length).join('0') + v;
 };
 
 /**
