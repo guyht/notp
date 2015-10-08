@@ -2,6 +2,35 @@
 
 var crypto = require('crypto');
 
+/**
+ * convert an integer to a byte array
+ * @param {Integer} num
+ * @return {Array} bytes
+ */
+function intToBytes(num) {
+	var bytes = [];
+
+	for(var i=7 ; i>=0 ; --i) {
+		bytes[i] = num & (255);
+		num = num >> 8;
+	}
+
+	return bytes;
+}
+
+/**
+ * convert a hex value to a byte array
+ * @param {String} hex string of hex to convert to a byte array
+ * @return {Array} bytes
+ */
+function hexToBytes(hex) {
+	var bytes = [];
+	for(var c = 0, C = hex.length; c < C; c += 2) {
+		bytes.push(parseInt(hex.substr(c, 2), 16));
+	}
+	return bytes;
+}
+
 var hotp = {};
 
 /**
@@ -190,33 +219,3 @@ totp.verify = function(token, key, opt) {
 
 module.exports.hotp = hotp;
 module.exports.totp = totp;
-
-/**
- * convert an integer to a byte array
- * @param {Integer} num
- * @return {Array} bytes
- */
-var intToBytes = function(num) {
-	var bytes = [];
-
-	for(var i=7 ; i>=0 ; --i) {
-		bytes[i] = num & (255);
-		num = num >> 8;
-	}
-
-	return bytes;
-};
-
-
-/**
- * convert a hex value to a byte array
- * @param {String} hex string of hex to convert to a byte array
- * @return {Array} bytes
- */
-var hexToBytes = function(hex) {
-	var bytes = [];
-	for(var c = 0, C = hex.length; c < C; c += 2) {
-		bytes.push(parseInt(hex.substr(c, 2), 16));
-	}
-	return bytes;
-};
