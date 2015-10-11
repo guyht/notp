@@ -22,7 +22,7 @@ hotp.gen = function(key, opt) {
 	key = key || '';
 	opt = opt || {};
 	var counter = opt.counter || 0;
-	var characters = opt.characters || 4;
+	var characters = opt.characters || 6;
 	var modulo = '1';
 	
 	for(var x = characters; x--;) modulo = modulo + '0'; 
