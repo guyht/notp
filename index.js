@@ -44,7 +44,6 @@ hotp.gen = function(key, opt) {
 		(h[offset + 1] & 0xff) << 16 |
 		(h[offset + 2] & 0xff) << 8  |
 		(h[offset + 3] & 0xff);
-		console.log(v);
 	
 	v = (v % parseInt(modulo)) + '';
 	
