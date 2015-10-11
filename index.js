@@ -52,8 +52,10 @@ hotp.gen = function(key, opt) {
 	key = key || '';
 	opt = opt || {};
 	var counter = opt.counter || 0;
-
-	var p = 6;
+	var characters = opt.characters || 6;
+	var modulo = '1';
+	
+	for(var x = characters; x--;) modulo = modulo + '0'; 
 
 	// Create the byte array
 	var b = new Buffer(intToBytes(counter));
@@ -72,10 +74,10 @@ hotp.gen = function(key, opt) {
 		(h[offset + 1] & 0xff) << 16 |
 		(h[offset + 2] & 0xff) << 8  |
 		(h[offset + 3] & 0xff);
-
-	v = (v % 1000000) + '';
-
-	return Array(7-v.length).join('0') + v;
+	
+	v = (v % parseInt(modulo)) + '';
+	
+	return Array((characters + 1)-v.length).join('0') + v;
 };
 
 /**
