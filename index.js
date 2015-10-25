@@ -101,7 +101,7 @@ hotp.gen = function(key, opt) {
  *         E.g. if W = 100, and C = 5, this function will check the passcode
  *         against all One Time Passcodes between 5 and 105.
  *
- *         Default - 50
+ *         Default - 3
  *
  *     counter - Counter value.  This should be stored by the application, must
  *         be user specific, and be incremented for each request.
@@ -109,7 +109,7 @@ hotp.gen = function(key, opt) {
  */
 hotp.verify = function(token, key, opt) {
 	opt = opt || {};
-	var window = opt.window || 50;
+	var window = opt.window || 3;
 	var counter = opt.counter || 0;
 
 	// Now loop through from C to C + W to determine if there is
