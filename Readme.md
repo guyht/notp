@@ -120,7 +120,7 @@ Some of the required arguments to the functions have also been removed from the 
 
 * `notp.checkHOTP(args, err, cb)` -> `notp.hotp.verify(token, key, opt)`
 * `notp.checkTOTP(args, err, cb)` -> `notp.totp.verify(token, key, opt)`
-* `notp.getHOTP(args, err, cb)` -> `notp.gotp.gen(key, opt)`
+* `notp.getHOTP(args, err, cb)` -> `notp.hotp.gen(key, opt)`
 * `notp.getTOTP(args, err, cb)` -> `notp.totp.gen(key, opt)`
 
 ## Args
