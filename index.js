@@ -109,7 +109,7 @@ hotp.gen = function(key, opt) {
  */
 hotp.verify = function(token, key, opt) {
 	opt = opt || {};
-	var window = opt.window || 50;
+	var window = opt.window !== undefined ? opt.window || 50;
 	var counter = opt.counter || 0;
 
 	// Now loop through from C to C + W to determine if there is
