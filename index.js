@@ -112,9 +112,10 @@ hotp.verify = function(token, key, opt) {
 	var window = opt.window || 50;
 	var counter = opt.counter || 0;
 
-	// Now loop through from C to C + W to determine if there is
-	// a correct code
-	for(var i = counter - window; i <=  counter + window; ++i) {
+	var loopStart = opt._totp ? counter - window : counter;
+	// Now loop through from C (C - W in case of TOTP)
+	// to C + W to determine if there is a correct code
+	for(var i = loopStart; i <=  counter + window; ++i) {
 		opt.counter = i;
 		if(this.gen(key, opt) === token) {
 			// We have found a matching code, trigger callback
@@ -213,7 +214,7 @@ totp.verify = function(token, key, opt) {
 	// Determine the value of the counter, C
 	// This is the number of time steps in seconds since T0
 	opt.counter = Math.floor((_t / 1000) / time);
-
+        opt._totp = true;
 	return hotp.verify(token, key, opt);
 };
 
