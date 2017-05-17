@@ -141,7 +141,7 @@ var totp = {};
  *         every user as it is the seed used to calculate the HMAC
  *
  *     time - The time step of the counter.  This must be the same for
- *         every request and is used to calculat C.
+ *         every request and is used to calculate C.
  *
  *         Default - 30
  *
