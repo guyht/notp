@@ -56,9 +56,9 @@ hotp.gen = function(key, opt) {
 	var p = 6;
 
 	// Create the byte array
-	var b = new Buffer(intToBytes(counter));
+	var b = Buffer.from(intToBytes(counter));
 
-	var hmac = crypto.createHmac('sha1', new Buffer(key));
+	var hmac = crypto.createHmac('sha1', Buffer.from(key));
 
 	// Update the HMAC with the byte array
 	var digest = hmac.update(b).digest('hex');
@@ -141,7 +141,7 @@ var totp = {};
  *         every user as it is the seed used to calculate the HMAC
  *
  *     time - The time step of the counter.  This must be the same for
- *         every request and is used to calculat C.
+ *         every request and is used to calculate C.
  *
  *         Default - 30
  *
