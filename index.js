@@ -116,7 +116,7 @@ hotp.verify = function(token, key, opt) {
 	// a correct code
 	for(var i = counter - window; i <=  counter + window; ++i) {
 		opt.counter = i;
-		if(this.gen(key, opt) === token) {
+		if((this.gen(key, opt) ^ token) === 0) {
 			// We have found a matching code, trigger callback
 			// and pass offset
 			return { delta: i - counter };
