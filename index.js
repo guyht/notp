@@ -53,7 +53,7 @@ hotp.gen = function(key, opt) {
 	opt = opt || {};
 	var counter = opt.counter || 0;
 
-	var p = 6;
+	var p = opt.digits || 6;
 
 	// Create the byte array
 	var b = new Buffer(intToBytes(counter));
@@ -68,14 +68,16 @@ hotp.gen = function(key, opt) {
 
 	// Truncate
 	var offset = h[19] & 0xf;
-	var v = (h[offset] & 0x7f) << 24 |
+	var v = (
+		(h[offset] & 0xff) << 24 |
 		(h[offset + 1] & 0xff) << 16 |
 		(h[offset + 2] & 0xff) << 8  |
-		(h[offset + 3] & 0xff);
+		(h[offset + 3] & 0xff)
+	) >>> 0;
 
-	v = (v % 1000000) + '';
+	v = (v % Math.pow(10, p)) + '';
 
-	return Array(7-v.length).join('0') + v;
+	return new Array((p+1)-v.length).join('0') + v;
 };
 
 /**
