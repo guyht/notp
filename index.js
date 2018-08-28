@@ -149,6 +149,8 @@ var totp = {};
 totp.gen = function(key, opt) {
 	opt = opt || {};
 	var time = opt.time || 30;
+	var counter = opt.counter || 0;
+	var shift = opt.shift || 1;
 	var _t = Date.now();
 
 	// Time has been overwritten.
@@ -161,7 +163,7 @@ totp.gen = function(key, opt) {
 
 	// Determine the value of the counter, C
 	// This is the number of time steps in seconds since T0
-	opt.counter = Math.floor((_t / 1000) / time);
+	opt.counter = Math.floor((_t / 1000) / time) + shift * counter;
 
 	return hotp.gen(key, opt);
 };
@@ -200,6 +202,8 @@ totp.gen = function(key, opt) {
 totp.verify = function(token, key, opt) {
 	opt = opt || {};
 	var time = opt.time || 30;
+	var counter = opt.counter || 0;
+	var shift = opt.shift || 1;
 	var _t = Date.now();
 
 	// Time has been overwritten.
@@ -212,7 +216,7 @@ totp.verify = function(token, key, opt) {
 
 	// Determine the value of the counter, C
 	// This is the number of time steps in seconds since T0
-	opt.counter = Math.floor((_t / 1000) / time);
+	opt.counter = Math.floor((_t / 1000) / time) + shift * counter;
 
 	return hotp.verify(token, key, opt);
 };
