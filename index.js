@@ -189,7 +189,7 @@ totp.gen = function(key, opt) {
  *         E.g. if W = 5, and C = 1000, this function will check the passcode
  *         against all One Time Passcodes between 995 and 1005.
  *
- *         Default - 6
+ *         Default - 50
  *
  *     time - The time step of the counter.  This must be the same for
  *         every request and is used to calculate C.
