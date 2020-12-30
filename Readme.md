@@ -72,6 +72,10 @@ Returns an object `{delta: #}` if the token is valid. `delta` is the count skew 
 **counter**
 > Counter value. This should be stored by the application on a per user basis. It is up to the application to track and increment this value as needed. It is also up to the application to increment this value if there is a skew between the client and server (`delta`)
 
+**digits**
+> Number of digits.
+> Default - 6
+
 ## totp.verify(token, key, opt)
 
 Check a time based one time password for validity
@@ -90,6 +94,10 @@ Returns an object `{delta: #}` if the token is valid. `delta` is the count skew 
 > The time step of the counter. This must be the same for every request and is used to calculate C.
 > Default - 30
 
+**digits**
+> Number of digits.
+> Default - 6
+
 ## hotp.gen(key, opt)
 
 Return a counter based one time password
@@ -97,6 +105,10 @@ Return a counter based one time password
 ### opt
 **counter**
 > Counter value. This should be stored by the application, must be user specific, and be incremented for each request.
+
+**digits**
+> Number of digits.
+> Default - 6
 
 ## totp.gen(key, opt)
 
@@ -106,6 +118,10 @@ Return a time based one time password
 **time**
 > The time step of the counter. This must be the same for every request and is used to calculate C.
 > Default - 30
+
+**digits**
+> Number of digits.
+> Default - 6
 
 # Migrating from 1.x to 2.x
 
@@ -128,7 +144,7 @@ Some of the required arguments to the functions have also been removed from the 
 The argument names have also changed to better describe the purpose of the argument.
 
 * `K` -> no longer in args/opt but passed directly as a function argument
-* `P` -> no longer in args/opt but passed directly as a function argument
+* `P` -> `digits`
 * `W` -> `window`
 * `C` -> `counter`
 * `T` -> `time`

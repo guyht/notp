@@ -47,13 +47,17 @@ var hotp = {};
  *     counter - Counter value.  This should be stored by the application, must
  *         be user specific, and be incremented for each request.
  *
+ *     digits - The number of digits in one time password.
+ *
+ *         Default - 6
+ *
  */
 hotp.gen = function(key, opt) {
 	key = key || '';
 	opt = opt || {};
 	var counter = opt.counter || 0;
 
-	var p = 6;
+	var p = opt.digits || 6;
 
 	// Create the byte array
 	var b = new Buffer(intToBytes(counter));
@@ -106,6 +110,10 @@ hotp.gen = function(key, opt) {
  *     counter - Counter value.  This should be stored by the application, must
  *         be user specific, and be incremented for each request.
  *
+ *     digits - The number of digits in one time password.
+ *
+ *         Default - 6
+ *
  */
 hotp.verify = function(token, key, opt) {
 	opt = opt || {};
@@ -144,6 +152,10 @@ var totp = {};
  *         every request and is used to calculat C.
  *
  *         Default - 30
+ *
+ *     digits - The number of digits in one time password.
+ *
+ *         Default - 6
  *
  */
 totp.gen = function(key, opt) {
@@ -195,6 +207,10 @@ totp.gen = function(key, opt) {
  *         every request and is used to calculate C.
  *
  *         Default - 30
+ *
+ *     digits - The number of digits in one time password.
+ *
+ *         Default - 6
  *
  */
 totp.verify = function(token, key, opt) {
