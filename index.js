@@ -24,11 +24,7 @@ function intToBytes(num) {
  * @return {Array} bytes
  */
 function hexToBytes(hex) {
-	var bytes = [];
-	for(var c = 0, C = hex.length; c < C; c += 2) {
-		bytes.push(parseInt(hex.substr(c, 2), 16));
-	}
-	return bytes;
+	return hex.match(/.{1,2}/g).map((v) => parseInt(v, 16));
 }
 
 var hotp = {};
