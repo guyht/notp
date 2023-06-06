@@ -47,6 +47,8 @@ var hotp = {};
  *     counter - Counter value.  This should be stored by the application, must
  *         be user specific, and be incremented for each request.
  *
+ *     algo - Algorithm used. Any valid argument to crypto.createHmac is valid.
+ *
  */
 hotp.gen = function(key, opt) {
 	key = key || '';
@@ -58,7 +60,7 @@ hotp.gen = function(key, opt) {
 	// Create the byte array
 	var b = new Buffer(intToBytes(counter));
 
-	var hmac = crypto.createHmac('sha1', new Buffer(key));
+	var hmac = crypto.createHmac(opt.algo || 'sha1', new Buffer(key));
 
 	// Update the HMAC with the byte array
 	var digest = hmac.update(b).digest('hex');
@@ -106,6 +108,8 @@ hotp.gen = function(key, opt) {
  *     counter - Counter value.  This should be stored by the application, must
  *         be user specific, and be incremented for each request.
  *
+ *     algo - Algorithm used. Any valid argument to crypto.createHmac is valid.
+ *
  */
 hotp.verify = function(token, key, opt) {
 	opt = opt || {};
@@ -144,6 +148,8 @@ var totp = {};
  *         every request and is used to calculat C.
  *
  *         Default - 30
+ *
+ *     algo - Algorithm used. Any valid argument to crypto.createHmac is valid.
  *
  */
 totp.gen = function(key, opt) {
@@ -195,6 +201,8 @@ totp.gen = function(key, opt) {
  *         every request and is used to calculate C.
  *
  *         Default - 30
+ *
+ *     algo - Algorithm used. Any valid argument to crypto.createHmac is valid.
  *
  */
 totp.verify = function(token, key, opt) {
